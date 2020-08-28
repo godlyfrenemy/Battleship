@@ -1,3 +1,6 @@
 C:\Users\lenovo\source\repos\Battleship\obj\Debug\Battleship.njsprojAssemblyReference.cache
 C:\Users\lenovo\source\repos\Battleship\obj\Debug\Battleship.njsproj.CoreCompileInputs.cache
 C:\Users\lenovo\source\repos\Battleship\bin\Microsoft.NodejsTools.WebRole.dll
+C:\Users\lenovo\source\repos\godlyfrenemy\Battleship\Battleship\obj\Debug\Battleship.njsprojAssemblyReference.cache
+C:\Users\lenovo\source\repos\godlyfrenemy\Battleship\Battleship\obj\Debug\Battleship.njsproj.CoreCompileInputs.cache
+C:\Users\lenovo\source\repos\godlyfrenemy\Battleship\Battleship\bin\Microsoft.NodejsTools.WebRole.dll

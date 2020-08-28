@@ -19,25 +19,32 @@ app.use(session({
 }));
 
 // load html 
-app.get('/', function (req, res) {
-    res.render("index");
+app.get('/', function (request, response) {
+    response.render("index");
 });
 
 // POST GetSessionId
-app.post('/GetSessionId', function (req, res) {
-    res.json(req.session.id);
+app.post('/GetSessionId', function (request, response) {
+    response.json(request.session.id);
 });
 
 // socket connect 
 io.on('connection', (socket) => {
     console.log("New user connected: ");
 
-    socket.on('StartGame', (data) => {
+    socket.on('StartGame', () => {
         if (!Maps)
             Maps = new GameMap();
-        Maps.AddUser(data);
-        io.sockets.emit('display', Maps);
+        else {
+            socket.emit('DisplayOnStart', Maps);
+        }
     });
+
+    socket.on('AddRequest', (data) => {
+        if (Maps.AddUser(data.UserID, data.UserType)) {
+            io.sockets.emit('AddResponse', { UserType: data.UserType, UserID: data.UserID });
+        }
+    })
 });
 
 class GameMap {
@@ -47,19 +54,41 @@ class GameMap {
         this.Rooms[1] = new Array(5); //observers
         this.playersFull = false;
     }
-    AddUser(UserID) {
+    AddUser(UserID, UserType) {
+        if (UserType == 'playersConnect' && !this.playersFull) {
+            if (!this.CanAddUser(UserID)) 
+                return false;
+            var players = this.Rooms[0];
+            for (var i = 0; i < players.length; i++) 
+                if (!players[i]) {
+                    players[i] = UserID;
+                    if (i == players.length - 1)
+                        this.playersFull = true;
+                    return true;
+                }
+        }
+        else if (UserType == 'playersConnect' && this.playersFull) {
+            return false;
+        }
+        else {
+            if (this.CanAddUser(UserID)) {
+                var observers = this.Rooms[1];
+                observers.push(UserID);
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    }
+
+    CanAddUser(UserID) {
         for (var i = 0; i < this.Rooms.length; i++) {
             for (var j = 0; j < this.Rooms[i].length; j++) {
                 if (this.Rooms[i][j] == UserID)
-                    return;
-                else if (!this.Rooms[i][j]) {
-                    this.Rooms[i][j] = UserID;
-                    if (i == 0 && j == 1)
-                        this.playersFull = true;
-                    return;
-                }
+                    return false;
             }
         }
-        this.Rooms[1].push(UserID);
+        return true;
     }
 }

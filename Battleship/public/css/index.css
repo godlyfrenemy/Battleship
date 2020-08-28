@@ -31,3 +31,9 @@ html, body {
     border: 1px solid red;
     box-sizing: border-box;
 }
+
+input {
+    line-height: 20px;
+    font-size: 18px;
+    display: block;
+}
