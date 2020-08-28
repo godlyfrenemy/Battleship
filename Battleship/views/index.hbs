@@ -8,13 +8,15 @@
 </head>
 <body>
     <script type="text/javascript" src="/js/client.js"></script>
-    <div class="wrapper">
-        <div class="display" id="players">
-            <input id="playersConnect" type="button" value="playersConnect"/>
-        </div>
-        <div class="display" id="observers">
-            <input id="observersConnect" type="button" value="observersConnect"  />
-        </div>
+    <div>
+        <form action="/createGame" method="get">
+            <input type="submit" value="Create Server" />
+        </form>
     </div>
+
+    <input id="connectServer" type="button" value="Connect Server" />
+    <form action="/game/:id" method="get">
+        <input id="input" class="hidden" type="text" placeholder="Enter the ID">
+    </form>
 </body>
 </html>

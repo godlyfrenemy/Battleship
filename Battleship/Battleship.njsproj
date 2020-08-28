@@ -30,11 +30,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="public\css\index.css" />
+    <Content Include="public\css\index2.css" />
     <Content Include="public\js\client.js" />
+    <Content Include="public\js\client2.js" />
     <Content Include="server.js" />
     <Content Include="package.json" />
     <Content Include="README.md" />
     <Content Include="views\index.hbs" />
+    <Content Include="views\index2.hbs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="public\js\" />

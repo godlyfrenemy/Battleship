@@ -1,0 +1,40 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    margin: 0;
+}
+
+.display{
+    width: 100%;
+    height: 49.7%;
+    box-sizing: border-box;
+    margin: 0;
+    border: 2px solid black;
+    border-radius: 3px;
+    display: inline-block;
+}
+
+.wrapper {
+    width: 50%;
+    height: 100%;
+    box-sizing: border-box;
+    display: block;
+    margin: 0;
+    float: left;
+}
+
+.info{
+    line-height: 20px;
+    font-size: 18px;
+    width: 100%;
+    border: 1px solid red;
+    box-sizing: border-box;
+}
+
+input {
+    line-height: 20px;
+    font-size: 18px;
+    display: block;
+    margin: 10px;
+}

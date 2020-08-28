@@ -11,7 +11,7 @@ app.set("view engine", "hbs");
 
 app.use(express.static('public'));
 
-var Maps;
+var Maps = new Map();
 
 app.use(session({
     secret: 'ssshhhhh',
@@ -23,6 +23,23 @@ app.get('/', function (request, response) {
     response.render("index");
 });
 
+app.get('/CreateGame', function (request, response) {
+    var rand = Math.floor(Math.random() * 10000).toString();
+    if (!Maps.has(rand)) {
+        Maps.set(rand, new GameMap());
+    }
+    response.redirect('/game/' + rand);
+});
+
+app.get('/game/:id', function (request, response) {
+    var rand = request.params.id;
+    if (Maps.has(rand)) {
+        response.render("index2");
+    } else {
+        response.redirect('/');
+    }
+});
+
 // POST GetSessionId
 app.post('/GetSessionId', function (request, response) {
     response.json(request.session.id);
@@ -32,63 +49,41 @@ app.post('/GetSessionId', function (request, response) {
 io.on('connection', (socket) => {
     console.log("New user connected: ");
 
-    socket.on('StartGame', () => {
-        if (!Maps)
-            Maps = new GameMap();
-        else {
-            socket.emit('DisplayOnStart', Maps);
-        }
+    socket.on('StartGame', (data) => {
+        var Map = Maps.get(data.idGame)
+        socket.emit('DisplayOnStart', Map);
     });
 
     socket.on('AddRequest', (data) => {
-        if (Maps.AddUser(data.UserID, data.UserType)) {
-            io.sockets.emit('AddResponse', { UserType: data.UserType, UserID: data.UserID });
+        var Map = Maps.get(data.idGame);
+        if (Map.AddUser(data.UserID, data.name)) {
+            io.sockets.emit('AddResponse', Map);
         }
     })
 });
 
 class GameMap {
     constructor() {
-        this.Rooms = new Array(2);
-        this.Rooms[0] = new Array(2); //players
-        this.Rooms[1] = new Array(5); //observers
+        this.PlayersRoom = new Map();
+        this.PlayersRoom.set('jasdlkfjlndlvjlkase', 'vitaliy');
+        this.ObserversRoom = new Map();
         this.playersFull = false;
     }
-    AddUser(UserID, UserType) {
-        if (UserType == 'playersConnect' && !this.playersFull) {
-            if (!this.CanAddUser(UserID)) 
-                return false;
-            var players = this.Rooms[0];
-            for (var i = 0; i < players.length; i++) 
-                if (!players[i]) {
-                    players[i] = UserID;
-                    if (i == players.length - 1)
-                        this.playersFull = true;
-                    return true;
-                }
-        }
-        else if (UserType == 'playersConnect' && this.playersFull) {
+
+    AddUser(UserID, name) {
+        if (this.PlayersRoom.has(UserID) || this.ObserversRoom.has(UserID)) {
             return false;
         }
+        else if (!this.playersFull) {
+            this.PlayersRoom.set(UserID, name);
+            if (this.PlayersRoom.size == 2)
+                this.playersFull = true;
+            return true;
+        }
         else {
-            if (this.CanAddUser(UserID)) {
-                var observers = this.Rooms[1];
-                observers.push(UserID);
-                return true;
-            }
-            else {
-                return false;
-            }
+            this.ObserversRoom.set(UserID, name);
+            return true;
         }
     }
 
-    CanAddUser(UserID) {
-        for (var i = 0; i < this.Rooms.length; i++) {
-            for (var j = 0; j < this.Rooms[i].length; j++) {
-                if (this.Rooms[i][j] == UserID)
-                    return false;
-            }
-        }
-        return true;
-    }
 }
