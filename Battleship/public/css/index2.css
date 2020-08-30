@@ -25,6 +25,7 @@ html, body {
 }
 
 .info{
+    padding: 5px;
     line-height: 20px;
     font-size: 18px;
     width: 100%;

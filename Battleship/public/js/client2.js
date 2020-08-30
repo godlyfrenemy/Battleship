@@ -17,22 +17,22 @@ $(function () {
     })
 
     socket.on('AddResponse', (data) => {
-        if (data.Full) {
-            $('#players').append(data.Name);
-        }
-        else {
-            $('#observers').append(data.Name);
-        }
+        Display(data.Name, data.Full)
     });
 
     socket.on('DisplayOnStart', (data) => {
-        if (data.Type == 'Players') {
-            $('#players').append(data.Name);
+        Display(data.Name, data.Type == 'Players')
+    });
+
+    function Display(name, isPlayers) {
+        var text = '<div class = "info">' + name + ' connected!</div>';
+        if (isPlayers) {
+            $('#players').append(text);
         }
         else {
-            $('#observers').append(data.Name);
+            $('#observers').append(text);
         }
-    });
+    }
 
     function StartGame() {
         let request = new XMLHttpRequest();
