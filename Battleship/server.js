@@ -50,14 +50,19 @@ io.on('connection', (socket) => {
     console.log("New user connected: ");
 
     socket.on('StartGame', (data) => {
-        var Map = Maps.get(data.idGame)
-        socket.emit('DisplayOnStart', Map);
+        var Map = Maps.get(data.idGame);
+        Map.PlayersRoom.forEach(function (value, key, map) {
+            socket.emit('DisplayOnStart', { Name: value, Type: 'Players' });
+        });
+        Map.ObserversRoom.forEach(function (value, key, map) {
+            socket.emit('DisplayOnStart', { Name: value, Type: 'Observers' });
+        });
     });
 
     socket.on('AddRequest', (data) => {
         var Map = Maps.get(data.idGame);
         if (Map.AddUser(data.UserID, data.name)) {
-            io.sockets.emit('AddResponse', Map);
+            io.sockets.emit('AddResponse', { Name: data.name, Full: Map.playersFull });
         }
     })
 });

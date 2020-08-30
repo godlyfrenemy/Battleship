@@ -17,11 +17,21 @@ $(function () {
     })
 
     socket.on('AddResponse', (data) => {
-        
+        if (data.Full) {
+            $('#players').append(data.Name);
+        }
+        else {
+            $('#observers').append(data.Name);
+        }
     });
 
     socket.on('DisplayOnStart', (data) => {
-       
+        if (data.Type == 'Players') {
+            $('#players').append(data.Name);
+        }
+        else {
+            $('#observers').append(data.Name);
+        }
     });
 
     function StartGame() {
